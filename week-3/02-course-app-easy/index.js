@@ -1,7 +1,10 @@
 const express = require('express');
+const bodyParser = require('body-parser');
+
 const app = express();
 
 app.use(express.json());
+//app.use(bodyParser.json());
 
 let ADMINS = [];
 let USERS = [];
@@ -9,11 +12,45 @@ let COURSES = [];
 
 // Admin routes
 app.post('/admin/signup', (req, res) => {
-  // logic to sign up admin
+  let username = req.body.username
+  let password = req.body.password
+  console.log(username, password);
+
+  ADMINS.push({
+    username: username,
+    password: password,
+    status: "created"
+  })
+
+  res.send('User created successfully');
 });
 
+function logArray(arr) {
+  for (element of arr) {
+    console.log(element)
+  }
+}
+
 app.post('/admin/login', (req, res) => {
-  // logic to log in admin
+
+  logArray(ADMINS);
+
+  let username = req.headers.username
+  let password = req.headers.password
+
+  console.log(username, password);
+  let adminUser = ADMINS.find((adminUser) => {
+    return (adminUser.username == username && adminUser.password == password)
+  })
+
+  if (adminUser != undefined) {
+    adminUser.status = "logged-in";
+    console.log(adminUser);
+    res.send('logged in');  
+  } else {
+    res.status(404).send('Login failed')
+  }
+
 });
 
 app.post('/admin/courses', (req, res) => {

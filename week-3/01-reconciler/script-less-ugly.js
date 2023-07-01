@@ -4,6 +4,7 @@ function createDomElements(data) {
 
   // Get the current children of the parent element and convert it to an array
   var currentChildren = Array.from(parentElement.children);
+  //console.log(currentChildren);
 
   let added = 0, deleted = 0, updated = 0;
   // Process each item in the data array
@@ -18,7 +19,16 @@ function createDomElements(data) {
       // If it exists, update it
       existingChild.children[0].innerHTML = item.title;
       existingChild.children[1].innerHTML = item.description;
+      // CRITICAL
       // Remove it from the currentChildren array
+      // NOTE/TODO this doesn't do any dom operation
+      // it only updating currentChildren which is an
+      // in-memory array.
+      // the actual dom manipulation happens via call to
+      // "parentElement"
+      // for new elements, parentElement.appendChild will get called
+      // for to-be-deleted elements, parentElement.removeChild will get called
+      // TODO - type this out and explain in readme or notes
       currentChildren = currentChildren.filter(function(child) {
         return child !== existingChild;
       });
@@ -27,6 +37,12 @@ function createDomElements(data) {
       // If it doesn't exist, create it
       var childElement = document.createElement("div");
       childElement.dataset.id = item.id; // Store the ID on the element for future lookups
+
+      // alternate way to add the id is to set a id attribute and use that in the comparison
+      // childElement.setAttribute("id". item.id)
+      // while matching in the above use getattribute
+      // child.getAttribute("id") to get the id
+      // read up on dataset and usage
 
       var grandChildElement1 = document.createElement("span");
       grandChildElement1.innerHTML = item.title
